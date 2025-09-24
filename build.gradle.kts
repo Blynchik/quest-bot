@@ -25,7 +25,9 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
+	implementation("org.telegram:telegrambotsextensions:6.9.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")

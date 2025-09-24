@@ -37,4 +37,6 @@ build/
 
 *.yml
 *.properties
+.env
+
 
