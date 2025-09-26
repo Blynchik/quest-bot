@@ -61,7 +61,7 @@ public class ChatService {
         log.info("Update chat tg id: {} on new tg id: {}", oldTgId, newTgId);
         ChatStore chat = getByTgId(oldTgId);
         chat.setTgChatId(newTgId);
-        return save(chat);
+        return chat;
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class ChatService {
         log.info("Update chat's tg id: {} state on: {}", chatTgId, chatState);
         ChatStore chat = getByTgId(chatTgId);
         chat.setChatState(chatState);
-        return save(chat);
+        return chat;
     }
 
     @Transactional

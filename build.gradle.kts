@@ -25,6 +25,8 @@ repositories {
 }
 
 dependencies {
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.11.0")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
 	implementation("org.telegram:telegrambotsextensions:6.9.0")

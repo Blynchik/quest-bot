@@ -18,7 +18,7 @@ public class PlayerStore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     @NotBlank
     private String name;
 

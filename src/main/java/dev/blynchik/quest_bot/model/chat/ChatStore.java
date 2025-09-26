@@ -20,14 +20,14 @@ public class ChatStore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tg_id", unique = true)
+    @Column(name = "tg_id", unique = true, nullable = false)
     @NotNull
     private Long tgChatId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state")
+    @Column(name = "state", nullable = false)
     @NotNull
-    private ChatStateStore chatState;
+    private ChatStateStore chatState = ChatStateStore.WAITING_NAME;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "player", referencedColumnName = "id")

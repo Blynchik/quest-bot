@@ -22,7 +22,7 @@ public class UserStore {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tg_id", unique = true)
+    @Column(name = "tg_id", unique = true, nullable = false)
     @NotNull
     private Long tgUserId;
 
@@ -32,10 +32,5 @@ public class UserStore {
 
     public UserStore(Long tgUserId) {
         this.tgUserId = tgUserId;
-    }
-
-    public UserStore(Long tgUserId, ChatStore chat) {
-        this.tgUserId = tgUserId;
-        this.chat = chat;
     }
 }
