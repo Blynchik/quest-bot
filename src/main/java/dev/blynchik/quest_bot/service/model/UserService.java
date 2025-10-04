@@ -29,8 +29,8 @@ public class UserService {
 
     public UserStore getByTgId(Long tgId) {
         log.info("Get user by tg id: {}", tgId);
-        return getByTgIdOpt(tgId)
-                .orElseThrow(() -> new NotFoundException("User tg id: %s not found".formatted(tgId)));
+        return userRepo.getByTgUserId(tgId)
+                .orElseThrow(() -> new NotFoundException("Пользователь id: %s не найден.".formatted(tgId)));
     }
 
     public Optional<UserStore> getByTgIdOpt(Long tgId) {
@@ -44,15 +44,9 @@ public class UserService {
         Optional<UserStore> mbUser = getByTgIdOpt(user.getTgUserId());
         if (mbUser.isPresent()) {
             chatService.updateTgId(mbUser.get().getChat().getTgChatId(), chat.getTgChatId());
-            throw new UniqueConstraintException("User tg id: %s already exists. Chat successfully updated.".formatted(user.getTgUserId()));
+            throw new UniqueConstraintException("Пользователь id: %s уже существует. Чат успешно обновлен.".formatted(user.getTgUserId()));
         }
         user.setChat(chat);
-        return save(user);
-    }
-
-    @Transactional
-    public UserStore save(UserStore user) {
-        log.info("Save user: {}", user);
         return userRepo.save(user);
     }
 }

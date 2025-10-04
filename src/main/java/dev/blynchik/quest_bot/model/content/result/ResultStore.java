@@ -1,11 +1,11 @@
 package dev.blynchik.quest_bot.model.content.result;
 
-import dev.blynchik.quest_bot.model.content.action.ActionStore;
-import dev.blynchik.quest_bot.model.content.condition.expression.Expression;
 import dev.blynchik.quest_bot.model.content.consequence.ConsequenceStore;
+import dev.blynchik.quest_bot.model.content.expression.Expression;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -18,6 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ResultStore {
 
     @Id
@@ -29,16 +30,8 @@ public class ResultStore {
     @Column(name = "condition", columnDefinition = "jsonb")
     private Expression condition;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "result_consequence",
-            joinColumns = @JoinColumn(name = "result_id"),
-            inverseJoinColumns = @JoinColumn(name = "consequence_id")
-    )
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ConsequenceStore> consequences = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "results", fetch = FetchType.LAZY)
-    private List<ActionStore> actions = new ArrayList<>();
 
     public ResultStore(Expression condition) {
         this.condition = condition;

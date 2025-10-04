@@ -2,8 +2,10 @@ package dev.blynchik.quest_bot.model.content.quest;
 
 import dev.blynchik.quest_bot.model.content.event.EventStore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class QuestStore {
 
     @Id
@@ -23,23 +26,19 @@ public class QuestStore {
     private Long id;
 
     @Column(name = "title", nullable = false)
-    @NotNull
+    @NotBlank
     private String title;
 
     @Column(name = "descr", nullable = false)
-    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 5000)
     private String descr;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "first_event", referencedColumnName = "id")
     private EventStore firstEvent;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "quest_event",
-            joinColumns = @JoinColumn(name = "quest_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EventStore> events = new ArrayList<>();
 
     public QuestStore(String title, String descr) {

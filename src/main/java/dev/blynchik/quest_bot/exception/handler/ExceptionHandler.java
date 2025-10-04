@@ -40,6 +40,12 @@ public class ExceptionHandler {
             return;
         }
 
+        if (ex instanceof IllegalCallbackTypeException) {
+            log.error("Logging IllegalCallbackTypeException", ex);
+            replyToUser(sender, tgChatId, ex.getMessage());
+            return;
+        }
+
         if (ex instanceof IllegalMessageContentException) {
             log.error("Logging IllegalMessageContentException", ex);
             replyToUser(sender, tgChatId, ex.getMessage());
@@ -49,6 +55,18 @@ public class ExceptionHandler {
         if (ex instanceof UniqueConstraintException) {
             log.error("Logging UniqueConstraintException", ex);
             replyToUser(sender, tgChatId, ex.getMessage());
+            return;
+        }
+
+        if (ex instanceof IllegalExpressionTypeException) {
+            log.error("Logging IllegalExpressionTypeException", ex);
+            replyToUser(sender, tgChatId, commonMsg);
+            return;
+        }
+
+        if (ex instanceof IllegalArgumentException) {
+            log.error("Logging IllegalArgumentException", ex);
+            replyToUser(sender, tgChatId, commonMsg);
             return;
         }
 

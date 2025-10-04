@@ -3,7 +3,8 @@ package dev.blynchik.quest_bot.config.bot;
 import dev.blynchik.quest_bot.exception.exception.IllegalMessageTypeException;
 import dev.blynchik.quest_bot.exception.exception.RuntimeBotException;
 import dev.blynchik.quest_bot.exception.handler.ExceptionHandler;
-import dev.blynchik.quest_bot.service.message.MessageHandler;
+import dev.blynchik.quest_bot.service.message.callback.CallbackHandler;
+import dev.blynchik.quest_bot.service.message.message.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -25,15 +26,17 @@ public class TelegramBot extends TelegramLongPollingCommandBot {
     private final Set<BotCommand> commands;
     private final MessageHandler messageHandler;
     private final ExceptionHandler exceptionHandler;
+    private final CallbackHandler callbackHandler;
 
     @Autowired
     public TelegramBot(Environment environment, Set<BotCommand> commands, MessageHandler messageHandler,
-                       ExceptionHandler exceptionHandler) {
+                       ExceptionHandler exceptionHandler, CallbackHandler callbackHandler) {
         super(environment.getProperty("BOT_TOKEN"));
         this.botUsername = environment.getProperty("BOT_USERNAME");
         this.commands = commands;
         this.messageHandler = messageHandler;
         this.exceptionHandler = exceptionHandler;
+        this.callbackHandler = callbackHandler;
         registerAll(commands.toArray(new BotCommand[0]));
     }
 
@@ -49,35 +52,22 @@ public class TelegramBot extends TelegramLongPollingCommandBot {
                 replyToUser(
                         messageHandler.handle(update.getMessage()));
             } else if (update.hasCallbackQuery()) {
-//                handleCallback(update.getCallbackQuery());
+                replyToUser(
+                        callbackHandler.handle(update.getCallbackQuery()));
             } else {
                 replyToUser(
-                        createMessage(extractChatId(update), "Неизвестный тип сообщения"));
-                throw new IllegalMessageTypeException("Неизвестный тип сообщения");
+                        createMessage(extractChatId(update), "Неизвестный тип сообщения."));
+                throw new IllegalMessageTypeException("Неизвестный тип сообщения.");
             }
         } catch (Exception ex) {
             exceptionHandler.handle(this, extractChatId(update), ex);
         }
     }
 
-//    private void handleCallback(CallbackQuery callback) {
-//        String data = callback.getData();
-//        Long chatId = callback.getMessage().getChatId();
-//
-//        if ("ACTION_1".equals(data)) {
-//            replyToUser(chatId, "Ты выбрал действие 1 ✅");
-//        } else if ("ACTION_2".equals(data)) {
-//            replyToUser(chatId, "Ты выбрал действие 2 ✅");
-//        } else {
-//            throw new IllegalButtonException("Неизвестная кнопка: " + data);
-//        }
-//    }
-
     public void replyToUser(SendMessage sendMessage) {
         log.info("Reply to chat tg id: {} message: {}", sendMessage.getChatId(), sendMessage.getText());
         try {
-            execute(
-                    sendMessage);
+            execute(sendMessage);
         } catch (TelegramApiException e) {
             log.error("Exception sending message: %s".formatted(sendMessage.getChatId()));
             throw new RuntimeBotException(e);
@@ -91,6 +81,6 @@ public class TelegramBot extends TelegramLongPollingCommandBot {
             return update.getCallbackQuery().getMessage().getChatId();
         }
         log.error("Unknown message type");
-        throw new IllegalMessageTypeException("Неизвестный тип сообщения!");
+        throw new IllegalMessageTypeException("Неизвестный тип сообщения.");
     }
 }

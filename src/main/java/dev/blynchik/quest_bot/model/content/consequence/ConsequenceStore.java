@@ -1,23 +1,21 @@
 package dev.blynchik.quest_bot.model.content.consequence;
 
 import dev.blynchik.quest_bot.model.content.consequence.params.ConsequenceParams;
-import dev.blynchik.quest_bot.model.content.result.ResultStore;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "consequence")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ConsequenceStore {
 
     @Id
@@ -34,9 +32,6 @@ public class ConsequenceStore {
     @Column(name = "params", columnDefinition = "jsonb", nullable = false)
     @NotNull
     private ConsequenceParams params;
-
-    @ManyToMany(mappedBy = "consequences", fetch = FetchType.LAZY)
-    private List<ResultStore> results = new ArrayList<>();
 
     public ConsequenceStore(ConsequenceParams params) {
         this.type = params.getType();

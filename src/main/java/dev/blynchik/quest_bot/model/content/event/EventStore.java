@@ -1,10 +1,11 @@
 package dev.blynchik.quest_bot.model.content.event;
 
 import dev.blynchik.quest_bot.model.content.action.ActionStore;
-import dev.blynchik.quest_bot.model.content.quest.QuestStore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class EventStore {
 
     @Id
@@ -24,14 +26,12 @@ public class EventStore {
     private Long id;
 
     @Column(name = "descr", nullable = false)
-    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 5000)
     private String descr;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ActionStore> actions = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
-    private List<QuestStore> quests = new ArrayList<>();
 
     public EventStore(String descr) {
         this.descr = descr;

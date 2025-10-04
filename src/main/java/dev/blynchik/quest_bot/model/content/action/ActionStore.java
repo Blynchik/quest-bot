@@ -1,11 +1,12 @@
 package dev.blynchik.quest_bot.model.content.action;
 
-import dev.blynchik.quest_bot.model.content.condition.expression.Expression;
+import dev.blynchik.quest_bot.model.content.expression.Expression;
 import dev.blynchik.quest_bot.model.content.result.ResultStore;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -18,6 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ActionStore {
 
     @Id
@@ -37,12 +39,7 @@ public class ActionStore {
     @NotNull
     private Boolean hideImprobable = true;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "action_result",
-            joinColumns = @JoinColumn(name = "action_id"),
-            inverseJoinColumns = @JoinColumn(name = "result_id")
-    )
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ResultStore> results = new ArrayList<>();
 
     public ActionStore(String descr, Expression condition) {
