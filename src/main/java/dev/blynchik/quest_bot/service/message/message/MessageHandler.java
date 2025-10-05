@@ -36,12 +36,14 @@ public class MessageHandler {
     public SendMessage handle(Message msg) {
         checkMessageContent(msg);
         Optional<ChatStore> chat = chatService.getByTgIdOpt(msg.getChatId());
-
         if (chat.isPresent() && chat.get().getChatState().equals(WAITING_NAME) && chat.get().getPlayer() == null) {
-            chatService.updateChatState(chat.get(), WAITING_QUEST);
+            if (msg.getText().isEmpty() || msg.getText().length() > 20 || msg.getText().isBlank()) {
+                throw new IllegalMessageContentException("Слишком длинное или невалидное имя.");
+            }
             PlayerStore player = playerService.create(
                     new PlayerStore(msg.getText()));
             chatService.updatePlayer(chat.get(), player);
+            chatService.updateChatState(chat.get(), WAITING_QUEST);
             return createMessageWithButton(msg.getChatId(), "Отлично, рейнджер %s! Приступайте к выполнению задания.".formatted(msg.getText()),
                     createInlineKeyboardButtonRows(
                             createInlineKeyboardButton("Случайный квест", RANDOM_QUEST)

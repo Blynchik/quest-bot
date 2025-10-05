@@ -4,6 +4,7 @@ import dev.blynchik.quest_bot.model.content.event.EventStore;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class PlayerStore {
 
     @Column(name = "name", nullable = false)
     @NotBlank
+    @Size(min = 1, max = 20)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
