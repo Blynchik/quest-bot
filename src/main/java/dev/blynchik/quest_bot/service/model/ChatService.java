@@ -46,14 +46,10 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatStore save(ChatStore chat) {
-        log.info("Save chat: {}", chat);
-        return chatRepo.save(chat);
-    }
-
-    @Transactional
     public ChatStore createIfNotExist(ChatStore chat) {
         log.info("Create chat tg id: {} if not exist", chat.getTgChatId());
+        if (chat.getId() != null)
+            throw new IllegalArgumentException("При создании чата использован уже существующий чат id: %s".formatted(chat.getId()));
         return chatRepo.getByTgChatId(chat.getTgChatId())
                 .orElse(chatRepo.save(chat));
     }
@@ -65,25 +61,16 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatStore updateTgId(Long oldTgId, Long newTgId) {
-        log.info("Update chat tg id: {} on new tg id: {}", oldTgId, newTgId);
-        ChatStore chat = chatRepo.getByTgChatId(oldTgId)
-                .orElseThrow(() -> new NotFoundException("Чат id: %s не найден.".formatted(oldTgId)));
+    public ChatStore updateTgId(ChatStore chat, Long newTgId) {
+        if (chat.getId() == null) throw new IllegalArgumentException("Чат не существует");
+        log.info("Update chat tg id: {} on new tg id: {}", chat.getTgChatId(), newTgId);
         chat.setTgChatId(newTgId);
         return chatRepo.save(chat);
     }
 
     @Transactional
-    public ChatStore updateChatState(Long chatTgId, ChatStateStore chatState) {
-        log.info("Update chat's tg id: {} state on: {}", chatTgId, chatState);
-        ChatStore chat = chatRepo.getByTgChatId(chatTgId)
-                .orElseThrow(() -> new NotFoundException("Чат id: %s не найден.".formatted(chatTgId)));
-        chat.setChatState(chatState);
-        return chatRepo.save(chat);
-    }
-
-    @Transactional
     public ChatStore updateChatState(ChatStore chat, ChatStateStore chatState) {
+        if (chat.getId() == null) throw new IllegalArgumentException("Чат не существует");
         log.info("Update chat's tg id: {} state on: {}", chat.getTgChatId(), chatState);
         chat.setChatState(chatState);
         return chatRepo.save(chat);
@@ -91,6 +78,7 @@ public class ChatService {
 
     @Transactional
     public ChatStore updatePlayer(ChatStore chat, PlayerStore player) {
+        if (chat.getId() == null) throw new IllegalArgumentException("Чат не существует");
         log.info("Update chat's tg id: {} player: {}", chat.getTgChatId(), player);
         chat.setPlayer(player);
         return chatRepo.save(chat);

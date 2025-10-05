@@ -24,6 +24,8 @@ public class ConditionService {
     @Transactional
     public ConditionStore create(ConditionStore condition) {
         log.info("Create condition: {}", condition);
+        if (condition.getId() != null)
+            throw new IllegalArgumentException("При создании условия используется уже созданное id: %s".formatted(condition.getId()));
         return conditionRepo.save(condition);
     }
 

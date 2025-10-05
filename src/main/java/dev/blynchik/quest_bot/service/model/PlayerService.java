@@ -38,41 +38,39 @@ public class PlayerService {
     @Transactional
     public PlayerStore create(PlayerStore player) {
         log.info("Create new player: {}", player);
+        if (player.getId() != null)
+            throw new IllegalArgumentException("При создании игрока используется уже созданный игрок id: %s".formatted(player.getId()));
         return playerRepo.save(player);
     }
 
     @Transactional
-    public PlayerStore updateEvent(Long id, EventStore event) {
-        log.info("Update player's id: {} event id: {}", id, event.getId());
-        PlayerStore player = playerRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Игрок не найден"));
+    public PlayerStore updateEvent(PlayerStore player, EventStore event) {
+        if (player.getId() == null) throw new IllegalArgumentException("Игрок не существует");
+        log.info("Update player's id: {} event id: {}", player.getId(), event.getId());
         player.setEvent(event);
         return playerRepo.save(player);
     }
 
     @Transactional
-    public PlayerStore updateCustom(Long id, PlayerCustom custom) {
-        log.info("Update player's id: {} custom: {}", id, custom);
-        PlayerStore player = playerRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Игрок не найден"));
+    public PlayerStore updateCustom(PlayerStore player, PlayerCustom custom) {
+        if (player.getId() == null) throw new IllegalArgumentException("Игрок не существует");
+        log.info("Update player's id: {} custom: {}", player.getId(), custom);
         player.setCustom(custom);
         return playerRepo.save(player);
     }
 
     @Transactional
-    public PlayerStore updateOffer(Long id, Map<Long, PlayerCustom> offer) {
-        log.info("Update player's id: {} offer: {}", id, offer);
-        PlayerStore player = playerRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Игрок не найден"));
+    public PlayerStore updateOffer(PlayerStore player, Map<Long, PlayerCustom> offer) {
+        if (player.getId() == null) throw new IllegalArgumentException("Игрок не существует");
+        log.info("Update player's id: {} offer: {}", player.getId(), offer);
         player.setOffer(offer);
         return playerRepo.save(player);
     }
 
     @Transactional
-    public PlayerStore clearOffer(Long id) {
-        log.info("Clear player's id: {} offer", id);
-        PlayerStore player = playerRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Игрок не найден"));
+    public PlayerStore clearOffer(PlayerStore player) {
+        if (player.getId() == null) throw new IllegalArgumentException("Игрок не существует");
+        log.info("Clear player's id: {} offer", player.getId());
         player.setOffer(null);
         return playerRepo.save(player);
     }

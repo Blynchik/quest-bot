@@ -52,6 +52,8 @@ public class QuestService {
     @Transactional
     public QuestStore create(QuestStore quest) {
         log.info("Create quest: {}", quest);
+        if (quest.getId() != null)
+            throw new IllegalArgumentException("При создании квеста используется уже созданный квест id: %s".formatted(quest.getId()));
         return questRepo.save(quest);
     }
 }

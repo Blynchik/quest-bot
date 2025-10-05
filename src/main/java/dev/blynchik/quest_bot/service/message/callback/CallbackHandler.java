@@ -1,6 +1,7 @@
 package dev.blynchik.quest_bot.service.message.callback;
 
 import dev.blynchik.quest_bot.exception.exception.IllegalCallbackTypeException;
+import dev.blynchik.quest_bot.model.chat.ChatStore;
 import dev.blynchik.quest_bot.model.content.action.ActionStore;
 import dev.blynchik.quest_bot.model.content.event.EventStore;
 import dev.blynchik.quest_bot.model.content.quest.QuestStore;
@@ -64,7 +65,7 @@ public class CallbackHandler {
             QuestStore quest = questService.getRandom();
             PlayerStore player = chatService.getPlayerByChatId(chatId);
             PlayerCustom custom = new PlayerCustom(player.getName(), "Банана", "Мергац", "10 000", LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-            playerService.updateOffer(player.getId(), Map.of(quest.getId(), custom));
+            playerService.updateOffer(player, Map.of(quest.getId(), custom));
             String messageText = textCustomizer.customizeQuestPreview(quest.getTitle(), quest.getDescr(), custom);
             return createMessageWithButton(chatId, messageText,
                     createInlineKeyboardButtonRows(
@@ -81,10 +82,11 @@ public class CallbackHandler {
                     .filter(a -> evaluator.evaluate(a.getCondition()))
                     .toList();
             PlayerCustom custom = player.getOffer().get(questId);
-            playerService.updateEvent(player.getId(), event);
-            playerService.updateCustom(player.getId(), custom);
-            playerService.clearOffer(player.getId());
-            chatService.updateChatState(chatId, ON_QUEST);
+            playerService.updateEvent(player, event);
+            playerService.updateCustom(player, custom);
+            playerService.clearOffer(player);
+            ChatStore chat = chatService.getByTgId(chatId);
+            chatService.updateChatState(chat, ON_QUEST);
             String messageText = textCustomizer.customizeEvent(
                     event.getDescr(),
                     actions.stream().map(ActionStore::getDescr).toList(),

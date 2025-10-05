@@ -41,9 +41,11 @@ public class UserService {
     @Transactional
     public UserStore createIfNotExist(UserStore user, ChatStore chat) {
         log.info("Create user id: {} if not exist", user.getTgUserId());
+        if (user.getId() != null)
+            throw new IllegalArgumentException("При создании пользователя используется уже созданный пользователь id: %s".formatted(user.getId()));
         Optional<UserStore> mbUser = getByTgIdOpt(user.getTgUserId());
         if (mbUser.isPresent()) {
-            chatService.updateTgId(mbUser.get().getChat().getTgChatId(), chat.getTgChatId());
+            chatService.updateTgId(chat, chat.getTgChatId());
             throw new UniqueConstraintException("Пользователь id: %s уже существует. Чат успешно обновлен.".formatted(user.getTgUserId()));
         }
         user.setChat(chat);
