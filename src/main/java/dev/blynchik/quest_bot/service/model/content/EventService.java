@@ -44,4 +44,12 @@ public class EventService {
         return eventRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено"));
     }
+
+    @Transactional
+    public EventStore create(EventStore event) {
+        log.info("Create event: {}", event);
+        if (event.getId() != null)
+            throw new IllegalArgumentException("При создании события используется уже созданное событие id: %s".formatted(event.getId()));
+        return eventRepo.save(event);
+    }
 }

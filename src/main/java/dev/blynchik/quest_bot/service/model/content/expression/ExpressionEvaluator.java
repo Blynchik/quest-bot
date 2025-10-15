@@ -1,5 +1,6 @@
 package dev.blynchik.quest_bot.service.model.content.expression;
 
+import dev.blynchik.quest_bot.exception.exception.IllegalExpressionTypeException;
 import dev.blynchik.quest_bot.model.content.expression.*;
 import dev.blynchik.quest_bot.model.content.expression.condition.ConditionStore;
 import dev.blynchik.quest_bot.service.model.content.ConditionService;
@@ -7,12 +8,10 @@ import dev.blynchik.quest_bot.service.model.content.expression.condition.params.
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @Slf4j
 public class ExpressionEvaluator {
     private final ConditionService conditionService;
@@ -40,7 +39,7 @@ public class ExpressionEvaluator {
                 return evaluateList(expression);
             }
         }
-        throw new RuntimeException("Здесь не так");
+        throw new IllegalExpressionTypeException("Неверный тип выражения");
     }
 
     private boolean evaluateSingle(Expression exp) {

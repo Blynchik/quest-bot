@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -73,5 +72,24 @@ public class PlayerService {
         log.info("Clear player's id: {} offer", player.getId());
         player.setOffer(null);
         return playerRepo.save(player);
+    }
+
+    @Transactional
+    public PlayerStore updateExpectedCallback(PlayerStore player, List<String> expectedCallback) {
+        if (player.getId() == null) throw new IllegalArgumentException("Игрок не существует");
+        log.info("Update player's id: {} expected callback: {}", player.getId(), expectedCallback);
+        player.setExpectedCallback(expectedCallback);
+        return playerRepo.save(player);
+    }
+
+    @Transactional
+    public PlayerStore finishQuest(PlayerStore player) {
+        if (player.getId() == null) throw new IllegalArgumentException("Игрок не существует");
+        log.info("Finish player's id: {} quest", player.getId());
+        player.setEvent(null);
+        player.setExpectedCallback(new ArrayList<>());
+        player.setOffer(new HashMap<>());
+        player.setCustom(new PlayerCustom());
+        return player;
     }
 }

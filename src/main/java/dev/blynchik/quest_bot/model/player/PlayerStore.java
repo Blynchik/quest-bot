@@ -10,6 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -33,8 +36,12 @@ public class PlayerStore {
     private EventStore event;
 
     @Type(JsonBinaryType.class)
+    @Column(name = "expected_callback", columnDefinition = "jsonb")
+    private List<String> expectedCallback = new ArrayList<>();
+
+    @Type(JsonBinaryType.class)
     @Column(name = "offer", columnDefinition = "jsonb")
-    private Map<Long, PlayerCustom> offer;
+    private Map<Long, PlayerCustom> offer = new HashMap<>();
 
     @Type(JsonBinaryType.class)
     @Column(name = "custom", columnDefinition = "jsonb")

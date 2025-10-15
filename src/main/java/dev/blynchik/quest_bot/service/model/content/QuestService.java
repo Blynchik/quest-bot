@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,6 +55,16 @@ public class QuestService {
         log.info("Create quest: {}", quest);
         if (quest.getId() != null)
             throw new IllegalArgumentException("При создании квеста используется уже созданный квест id: %s".formatted(quest.getId()));
+        return questRepo.save(quest);
+    }
+
+    @Transactional
+    public QuestStore updateEvents(QuestStore quest, List<EventStore> events) {
+        log.info("Create quest: {}", quest);
+        if (quest.getId() == null)
+            throw new IllegalArgumentException("При обновлении квеста используется несуществующий квест");
+        quest.setFirstEvent(events.get(0));
+        quest.setEvents(events);
         return questRepo.save(quest);
     }
 }

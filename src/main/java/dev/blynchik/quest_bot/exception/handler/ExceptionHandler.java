@@ -16,6 +16,12 @@ public class ExceptionHandler {
         String commonMsg = "Ошибка! Что-то пошло не так! Попробуйте позже.";
         log.info("Handling exception: {}", ex.getMessage());
 
+        if (ex instanceof UnexpectedCallbackException) {
+            log.error("Logging UnexpectedCallbackException", ex);
+            replyToUser(sender, tgChatId, ex.getMessage());
+            return;
+        }
+
         if (ex instanceof NotFoundException) {
             log.error("Logging NotFoundException", ex);
             replyToUser(sender, tgChatId, ex.getMessage());
@@ -58,8 +64,20 @@ public class ExceptionHandler {
             return;
         }
 
+        if (ex instanceof NoPossibleResultException) {
+            log.error("Logging NoPossibleResultException", ex);
+            replyToUser(sender, tgChatId, commonMsg);
+            return;
+        }
+
         if (ex instanceof IllegalExpressionTypeException) {
             log.error("Logging IllegalExpressionTypeException", ex);
+            replyToUser(sender, tgChatId, commonMsg);
+            return;
+        }
+
+        if (ex instanceof IllegalConsequenceTypeException) {
+            log.error("Logging IllegalConsequenceTypeException", ex);
             replyToUser(sender, tgChatId, commonMsg);
             return;
         }
