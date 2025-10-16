@@ -1,7 +1,5 @@
 package dev.blynchik.quest_bot.service.message.command;
 
-import dev.blynchik.quest_bot.model.chat.ChatStateStore;
-import dev.blynchik.quest_bot.model.chat.ChatStore;
 import dev.blynchik.quest_bot.model.user.UserStore;
 import dev.blynchik.quest_bot.service.model.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +23,7 @@ public class CommandHandler {
         log.info("Command /start on execute by user tg id: {}, chat tg id: {}", userId, chatId);
         String msg = "Привет! Введи свое имя, рейнджер!";
         userService.createIfNotExist(
-                new UserStore(userId),
-                new ChatStore(chatId, ChatStateStore.WAITING_NAME));
+                new UserStore(userId, chatId));
         return createMessage(chatId, msg);
     }
 }

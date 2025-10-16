@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserStoreRepo extends JpaRepository<UserStore, Long> {
     Optional<UserStore> getByTgUserId(Long id);
+
+    Optional<UserStore> getByChatId(Long id);
 }

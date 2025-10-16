@@ -1,6 +1,6 @@
 package dev.blynchik.quest_bot.service.message.customizer;
 
-import dev.blynchik.quest_bot.model.player.PlayerCustom;
+import dev.blynchik.quest_bot.model.user.PlayerCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

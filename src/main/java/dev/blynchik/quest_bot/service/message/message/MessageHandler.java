@@ -2,10 +2,8 @@ package dev.blynchik.quest_bot.service.message.message;
 
 import dev.blynchik.quest_bot.exception.exception.IllegalMessageContentException;
 import dev.blynchik.quest_bot.exception.exception.IllegalMessageTypeException;
-import dev.blynchik.quest_bot.model.chat.ChatStore;
-import dev.blynchik.quest_bot.model.player.PlayerStore;
-import dev.blynchik.quest_bot.service.model.ChatService;
-import dev.blynchik.quest_bot.service.model.PlayerService;
+import dev.blynchik.quest_bot.model.user.UserStore;
+import dev.blynchik.quest_bot.service.model.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,39 +15,33 @@ import java.util.Optional;
 import static dev.blynchik.quest_bot.config.bot.util.CallbackType.RANDOM_QUEST;
 import static dev.blynchik.quest_bot.config.bot.util.CallbackType.START;
 import static dev.blynchik.quest_bot.config.bot.util.SendMessageUtil.*;
-import static dev.blynchik.quest_bot.model.chat.ChatStateStore.WAITING_NAME;
-import static dev.blynchik.quest_bot.model.chat.ChatStateStore.WAITING_QUEST;
+import static dev.blynchik.quest_bot.model.user.UserState.WAITING_NAME;
+import static dev.blynchik.quest_bot.model.user.UserState.WAITING_QUEST;
 
 @Component
 @Slf4j
 public class MessageHandler {
-    private final ChatService chatService;
-    private final PlayerService playerService;
+    private final UserService userService;
 
     @Autowired
-    public MessageHandler(ChatService chatService,
-                          PlayerService playerService) {
-        this.chatService = chatService;
-        this.playerService = playerService;
+    public MessageHandler(UserService userService) {
+        this.userService = userService;
     }
 
     public SendMessage handle(Message msg) {
         checkMessageContent(msg);
-        Optional<ChatStore> chat = chatService.getByTgIdOpt(msg.getChatId());
-        if (chat.isPresent() && chat.get().getChatState().equals(WAITING_NAME) && chat.get().getPlayer() == null) {
+        Optional<UserStore> chat = userService.getByChatIdOpt(msg.getChatId());
+        if (chat.isPresent() && chat.get().getState().equals(WAITING_NAME) && chat.get().getName() == null) {
             if (msg.getText().isEmpty() || msg.getText().length() > 20 || msg.getText().isBlank()) {
                 throw new IllegalMessageContentException("Слишком длинное или невалидное имя.");
             }
-            PlayerStore player = playerService.create(
-                    new PlayerStore(msg.getText()));
-            chatService.updatePlayer(chat.get(), player);
-            chatService.updateChatState(chat.get(), WAITING_QUEST);
+            userService.createPlayer(chat.get(), msg.getText());
             return createMessageWithButton(msg.getChatId(), "Отлично, рейнджер %s! Приступайте к выполнению задания.".formatted(msg.getText()),
                     createInlineKeyboardButtonRows(
                             createInlineKeyboardButton("Случайный квест", RANDOM_QUEST)
                     ));
 
-        } else if (chat.isPresent() && chat.get().getChatState().equals(WAITING_QUEST)) {
+        } else if (chat.isPresent() && chat.get().getState().equals(WAITING_QUEST)) {
             return createMessageWithButton(msg.getChatId(), "Почему не на задании, рейнджер?",
                     createInlineKeyboardButtonRows(
                             createInlineKeyboardButton("Случайный квест", RANDOM_QUEST)

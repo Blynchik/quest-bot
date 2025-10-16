@@ -10,7 +10,7 @@ import dev.blynchik.quest_bot.model.content.consequence.ConsequenceType;
         property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = StartEventParam.class, name = "START_EVENT")
+        @JsonSubTypes.Type(value = StartEventParam.class, name = "NEXT_EVENT")
 })
 public interface ConsequenceParams {
     ConsequenceType getType();

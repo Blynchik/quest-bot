@@ -82,7 +82,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.FINISH_EVENT)
+                                                                        .type(ConsequenceType.FINISH_QUEST)
                                                                         .params(new StartEventParam())
                                                                         .build()
                                                         ))
@@ -107,7 +107,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore1.getId()))
                                                                         .build()
                                                         ))
@@ -123,7 +123,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore34.getId()))
                                                                         .build()
                                                         ))
@@ -150,7 +150,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore39.getId()))
                                                                         .build()
                                                         ))
@@ -166,7 +166,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore34.getId()))
                                                                         .build()
                                                         ))
@@ -182,7 +182,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore1.getId()))
                                                                         .build()
                                                         ))
@@ -209,7 +209,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore1.getId()))
                                                                         .build()
                                                         ))
@@ -225,7 +225,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore34.getId()))
                                                                         .build()
                                                         ))
@@ -251,7 +251,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore40.getId()))
                                                                         .build()
                                                         ))
@@ -267,7 +267,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore34.getId()))
                                                                         .build()
                                                         ))
@@ -283,7 +283,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore1.getId()))
                                                                         .build()
                                                         ))
@@ -312,7 +312,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore32.getId()))
                                                                         .build()
                                                         ))
@@ -328,7 +328,7 @@ public class DataInitializer implements ApplicationRunner {
                                                         .condition(new SingleExpression(alwaysTrueCondition.getId()))
                                                         .consequences(List.of(
                                                                 ConsequenceStore.builder()
-                                                                        .type(ConsequenceType.START_EVENT)
+                                                                        .type(ConsequenceType.NEXT_EVENT)
                                                                         .params(new StartEventParam(eventStore33.getId()))
                                                                         .build()
                                                         ))

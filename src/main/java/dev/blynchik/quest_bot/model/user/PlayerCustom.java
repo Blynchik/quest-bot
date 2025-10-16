@@ -1,4 +1,4 @@
-package dev.blynchik.quest_bot.model.player;
+package dev.blynchik.quest_bot.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StartEventParam implements ConsequenceParams {
-    private final ConsequenceType type = ConsequenceType.START_EVENT;
+    private final ConsequenceType type = ConsequenceType.NEXT_EVENT;
     private Long eventId;
 
     public StartEventParam(Long eventId) {
