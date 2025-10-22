@@ -1,7 +1,7 @@
 package dev.blynchik.quest_bot.model.content.expression.condition;
 
-import dev.blynchik.quest_bot.model.content.expression.condition.params.AlwaysParams;
 import dev.blynchik.quest_bot.model.content.expression.condition.params.ConditionParams;
+import dev.blynchik.quest_bot.model.content.expression.condition.params.impl.AlwaysParams;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,8 +1,13 @@
 package dev.blynchik.quest_bot.service.model.content.expression;
 
 import dev.blynchik.quest_bot.exception.exception.IllegalExpressionTypeException;
-import dev.blynchik.quest_bot.model.content.expression.*;
+import dev.blynchik.quest_bot.model.content.expression.BinaryLogicOperator;
+import dev.blynchik.quest_bot.model.content.expression.Expression;
 import dev.blynchik.quest_bot.model.content.expression.condition.ConditionStore;
+import dev.blynchik.quest_bot.model.content.expression.impl.ExpressionList;
+import dev.blynchik.quest_bot.model.content.expression.impl.NodeExpression;
+import dev.blynchik.quest_bot.model.content.expression.impl.NotExpression;
+import dev.blynchik.quest_bot.model.content.expression.impl.SingleExpression;
 import dev.blynchik.quest_bot.service.model.content.ConditionService;
 import dev.blynchik.quest_bot.service.model.content.expression.condition.params.ConditionParamsHandlerPool;
 import lombok.extern.slf4j.Slf4j;

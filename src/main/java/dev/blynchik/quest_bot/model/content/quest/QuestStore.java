@@ -1,6 +1,8 @@
 package dev.blynchik.quest_bot.model.content.quest;
 
 import dev.blynchik.quest_bot.model.content.event.EventStore;
+import dev.blynchik.quest_bot.model.content.quest.rule.Rule;
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,9 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "quest")
@@ -40,6 +45,10 @@ public class QuestStore {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EventStore> events = new ArrayList<>();
+
+    @Type(JsonBinaryType.class)
+    @Column(name = "rule", columnDefinition = "jsonb")
+    private Map<String, Rule> rule = new HashMap<>();
 
     public QuestStore(String title, String descr) {
         this.title = title;

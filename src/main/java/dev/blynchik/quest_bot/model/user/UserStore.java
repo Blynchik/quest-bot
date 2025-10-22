@@ -3,9 +3,7 @@ package dev.blynchik.quest_bot.model.user;
 import dev.blynchik.quest_bot.model.content.event.EventStore;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +17,8 @@ import java.util.Map;
 @Entity
 @Table(name = "bot_user",
         indexes = {
-                @Index(name = "idx_user_tg_id", columnList = "tg_id")
+                @Index(name = "idx_user_tg_id", columnList = "tg_id"),
+                @Index(name = "idx_chat_id", columnList = "chat_id")
         })
 @Data
 @AllArgsConstructor

@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static dev.blynchik.quest_bot.config.bot.util.CallbackType.ACTION;
+import static dev.blynchik.quest_bot.config.bot.util.CallbackUtil.SEPARATOR;
 import static dev.blynchik.quest_bot.model.user.UserState.ON_QUEST;
 import static dev.blynchik.quest_bot.model.user.UserState.WAITING_QUEST;
-import static dev.blynchik.quest_bot.service.message.callback.CallbackHandler.SEPARATOR;
 
 @Service
 @Transactional(readOnly = true)
@@ -124,7 +124,7 @@ public class UserService {
         return actions.stream()
                 .map(a -> {
                     if (a.getId() == null) throw new IllegalArgumentException("Действие не существует.");
-                    return ACTION.name() + SEPARATOR + a.getId();
+                    return ACTION.name() + SEPARATOR.replace() + a.getId();
                 })
                 .toList();
     }

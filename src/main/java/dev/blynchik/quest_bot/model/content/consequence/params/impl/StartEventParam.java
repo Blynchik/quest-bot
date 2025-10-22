@@ -1,6 +1,7 @@
-package dev.blynchik.quest_bot.model.content.consequence.params;
+package dev.blynchik.quest_bot.model.content.consequence.params.impl;
 
 import dev.blynchik.quest_bot.model.content.consequence.ConsequenceType;
+import dev.blynchik.quest_bot.model.content.consequence.params.ConsequenceParams;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

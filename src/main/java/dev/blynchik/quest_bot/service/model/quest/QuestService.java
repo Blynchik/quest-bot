@@ -1,9 +1,10 @@
-package dev.blynchik.quest_bot.service.model.content;
+package dev.blynchik.quest_bot.service.model.quest;
 
 import dev.blynchik.quest_bot.exception.exception.NotFoundException;
 import dev.blynchik.quest_bot.model.content.event.EventStore;
 import dev.blynchik.quest_bot.model.content.quest.QuestStore;
 import dev.blynchik.quest_bot.repo.content.QuestRepo;
+import dev.blynchik.quest_bot.service.model.content.EventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

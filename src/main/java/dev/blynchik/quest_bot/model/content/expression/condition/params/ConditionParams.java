@@ -3,6 +3,8 @@ package dev.blynchik.quest_bot.model.content.expression.condition.params;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import dev.blynchik.quest_bot.model.content.expression.condition.ConditionType;
+import dev.blynchik.quest_bot.model.content.expression.condition.params.impl.AlwaysParams;
+import dev.blynchik.quest_bot.model.content.expression.condition.params.impl.ChanceParams;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

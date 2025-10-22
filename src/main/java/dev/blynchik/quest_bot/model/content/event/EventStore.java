@@ -30,6 +30,9 @@ public class EventStore {
     @Size(min = 1, max = 5000)
     private String descr;
 
+    @Column(name = "hide_state")
+    private boolean hideState = true;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ActionStore> actions = new ArrayList<>();
 

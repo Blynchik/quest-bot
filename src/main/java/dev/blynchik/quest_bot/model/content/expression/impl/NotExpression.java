@@ -1,5 +1,7 @@
-package dev.blynchik.quest_bot.model.content.expression;
+package dev.blynchik.quest_bot.model.content.expression.impl;
 
+import dev.blynchik.quest_bot.model.content.expression.Expression;
+import dev.blynchik.quest_bot.model.content.expression.ExpressionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

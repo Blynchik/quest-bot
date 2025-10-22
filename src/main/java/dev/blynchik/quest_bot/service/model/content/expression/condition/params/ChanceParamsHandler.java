@@ -1,6 +1,6 @@
 package dev.blynchik.quest_bot.service.model.content.expression.condition.params;
 
-import dev.blynchik.quest_bot.model.content.expression.condition.params.ChanceParams;
+import dev.blynchik.quest_bot.model.content.expression.condition.params.impl.ChanceParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

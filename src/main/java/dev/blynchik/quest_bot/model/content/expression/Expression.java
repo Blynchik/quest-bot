@@ -2,6 +2,10 @@ package dev.blynchik.quest_bot.model.content.expression;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import dev.blynchik.quest_bot.model.content.expression.impl.ExpressionList;
+import dev.blynchik.quest_bot.model.content.expression.impl.NodeExpression;
+import dev.blynchik.quest_bot.model.content.expression.impl.NotExpression;
+import dev.blynchik.quest_bot.model.content.expression.impl.SingleExpression;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

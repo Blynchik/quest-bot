@@ -6,9 +6,11 @@ import dev.blynchik.quest_bot.exception.exception.NoPossibleResultException;
 import dev.blynchik.quest_bot.exception.exception.UnexpectedCallbackException;
 import dev.blynchik.quest_bot.model.content.action.ActionStore;
 import dev.blynchik.quest_bot.model.content.consequence.ConsequenceStore;
-import dev.blynchik.quest_bot.model.content.consequence.params.StartEventParam;
+import dev.blynchik.quest_bot.model.content.consequence.params.impl.ChangeNumStateParam;
+import dev.blynchik.quest_bot.model.content.consequence.params.impl.StartEventParam;
 import dev.blynchik.quest_bot.model.content.event.EventStore;
 import dev.blynchik.quest_bot.model.content.quest.QuestStore;
+import dev.blynchik.quest_bot.model.content.quest.rule.impl.NumRule;
 import dev.blynchik.quest_bot.model.content.result.ResultStore;
 import dev.blynchik.quest_bot.model.user.PlayerCustom;
 import dev.blynchik.quest_bot.model.user.UserStore;
@@ -17,9 +19,10 @@ import dev.blynchik.quest_bot.service.message.customizer.TextCustomizer;
 import dev.blynchik.quest_bot.service.model.UserService;
 import dev.blynchik.quest_bot.service.model.content.ActionService;
 import dev.blynchik.quest_bot.service.model.content.EventService;
-import dev.blynchik.quest_bot.service.model.content.QuestService;
 import dev.blynchik.quest_bot.service.model.content.ResultService;
 import dev.blynchik.quest_bot.service.model.content.expression.ExpressionEvaluator;
+import dev.blynchik.quest_bot.service.model.quest.PlayerCustomStateService;
+import dev.blynchik.quest_bot.service.model.quest.QuestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,12 +37,13 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static dev.blynchik.quest_bot.config.bot.util.CallbackType.*;
+import static dev.blynchik.quest_bot.config.bot.util.CallbackUtil.SEPARATOR;
 import static dev.blynchik.quest_bot.config.bot.util.SendMessageUtil.*;
 
 @Component
 @Slf4j
 public class CallbackHandler {
-    private UserService userService;
+    private final UserService userService;
     private final QuestService questService;
     private final EventService eventService;
     private final ActionService actionService;
@@ -47,12 +51,13 @@ public class CallbackHandler {
     private final ExpressionEvaluator evaluator;
     private final CommandHandler commandHandler;
     private final TextCustomizer textCustomizer;
-    public static final String SEPARATOR = "::";
+    private final PlayerCustomStateService playerCustomStateService;
 
     @Autowired
     public CallbackHandler(UserService userService, QuestService questService, EventService eventService,
                            ActionService actionService, ResultService resultService, ExpressionEvaluator evaluator,
-                           CommandHandler commandHandler, TextCustomizer textCustomizer) {
+                           CommandHandler commandHandler, TextCustomizer textCustomizer,
+                           PlayerCustomStateService playerCustomStateService) {
         this.userService = userService;
         this.questService = questService;
         this.eventService = eventService;
@@ -61,6 +66,7 @@ public class CallbackHandler {
         this.evaluator = evaluator;
         this.commandHandler = commandHandler;
         this.textCustomizer = textCustomizer;
+        this.playerCustomStateService = playerCustomStateService;
     }
 
     public SendMessage handle(CallbackQuery callbackQuery) {
@@ -71,18 +77,27 @@ public class CallbackHandler {
         if (data.startsWith(RANDOM_QUEST.name())) {
             UserStore player = userService.getByChatId(chatId);
             QuestStore quest = questService.getRandom();
-            PlayerCustom custom = new PlayerCustom(player.getName(), "Банана", "Мергац", "10 000", LocalDate.now().plusYears(1000L).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-            player = userService.prepareToOfferQuest(player, Map.of(quest.getId(), custom));
-            String messageText = textCustomizer.customizeQuestPreview(quest.getTitle(), quest.getDescr(), custom);
+            PlayerCustom offerState = PlayerCustom.builder()
+                    .ranger(player.getName())
+                    .planet("Банана")
+                    .system("Мергац")
+                    .reward("10 000")
+                    .tillDate(LocalDate.now().plusYears(1000L).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                    .rules(quest.getRule())
+                    .ruleStates(playerCustomStateService.getStartState(player, quest))
+                    .build();
+            player = userService.prepareToOfferQuest(player, Map.of(quest.getId(), offerState));
+            String messageText = textCustomizer.customizeQuestPreview(quest.getTitle(), quest.getDescr(), offerState);
             return createMessageWithButton(chatId, messageText,
                     createInlineKeyboardButtonRows(
-                            createInlineKeyboardButton("Начать квест", START_QUEST.name() + SEPARATOR + quest.getId())
+                            createInlineKeyboardButton("Начать квест",
+                                    "%s%s%s".formatted(START_QUEST.name(), SEPARATOR.replace(), quest.getId()))
                     ));
         }
 
         if (data.startsWith(START_QUEST.name())) {
             UserStore player = userService.getByChatId(chatId);
-            String[] callbackData = data.split(SEPARATOR);
+            String[] callbackData = data.split(SEPARATOR.replace());
             Long questId = Long.parseLong(callbackData[1]);
             EventStore event = questService.getFirstEventByQuestId(questId);
             List<ActionStore> actions = eventService.getActionsByEventId(event.getId()).stream()
@@ -93,9 +108,11 @@ public class CallbackHandler {
             String messageText = textCustomizer.customizeEvent(
                     event.getDescr(),
                     actions.stream().map(ActionStore::getDescr).toList(),
-                    player.getCustom());
+                    player.getCustom(),
+                    event.isHideState());
             List<InlineKeyboardButton> actionButtons = IntStream.range(0, actions.size())
-                    .mapToObj(i -> createInlineKeyboardButton(String.valueOf(i + 1), ACTION.name() + SEPARATOR + actions.get(i).getId()))
+                    .mapToObj(i -> createInlineKeyboardButton(String.valueOf(i + 1),
+                            "%s%s%s".formatted(ACTION.name(), SEPARATOR.replace(), actions.get(i).getId())))
                     .toList();
             return createMessageWithButton(chatId, messageText,
                     createInlineKeyboardButtonRows(
@@ -110,7 +127,7 @@ public class CallbackHandler {
                             .findFirst()
                             .orElseThrow(
                                     () -> new UnexpectedCallbackException("Неверная команда."))
-                            .split(SEPARATOR)[1]);
+                            .split(SEPARATOR.replace())[1]);
             ResultStore result = actionService.getResultsByActionId(actionId).stream()
                     .filter(r -> evaluator.evaluate(r.getCondition()))
                     // здесь должно быть решение о том какой результат выдать, если несколько подходят по условиям
@@ -122,6 +139,18 @@ public class CallbackHandler {
             for (ConsequenceStore con : consequences) {
                 switch (con.getType()) {
                     case NEXT_EVENT -> nextEventId = ((StartEventParam) con.getParams()).getEventId();
+                    case CHANGE_NUM_STATE -> {
+                        var value = Integer.parseInt(player.getCustom().getRuleStates().get(((ChangeNumStateParam) con.getParams()).getKey())) + ((ChangeNumStateParam) con.getParams()).getValue();
+                        player.getCustom().getRuleStates().put(((ChangeNumStateParam) con.getParams()).getKey(), String.valueOf(value));
+                        if (value < ((NumRule) player.getCustom().getRules().get(((ChangeNumStateParam) con.getParams()).getKey())).getMin()) {
+                            PlayerCustom custom = player.getCustom();
+                            userService.prepareToFinishQuest(player);
+                            return createMessageWithButton(chatId, ((NumRule) custom.getRules().get(((ChangeNumStateParam) con.getParams()).getKey())).getOutOfRuleDescr(),
+                                    createInlineKeyboardButtonRows(
+                                            createInlineKeyboardButton("Случайный квест", RANDOM_QUEST)
+                                    ));
+                        }
+                    }
                     case FINISH_QUEST -> {
                         player = userService.prepareToFinishQuest(player);
                         return createMessageWithButton(chatId, "Рейнджер %s! Для вас есть новое задание!".formatted(player.getName()),
@@ -141,9 +170,11 @@ public class CallbackHandler {
             String messageText = textCustomizer.customizeEvent(
                     event.getDescr(),
                     actions.stream().map(ActionStore::getDescr).toList(),
-                    player.getCustom());
+                    player.getCustom(),
+                    event.isHideState());
             List<InlineKeyboardButton> actionButtons = IntStream.range(0, actions.size())
-                    .mapToObj(i -> createInlineKeyboardButton(String.valueOf(i + 1), ACTION.name() + SEPARATOR + actions.get(i).getId()))
+                    .mapToObj(i -> createInlineKeyboardButton(String.valueOf(i + 1),
+                            "%s%s%s".formatted(ACTION.name(), SEPARATOR.replace(), actions.get(i).getId())))
                     .toList();
             return createMessageWithButton(chatId, messageText,
                     createInlineKeyboardButtonRows(

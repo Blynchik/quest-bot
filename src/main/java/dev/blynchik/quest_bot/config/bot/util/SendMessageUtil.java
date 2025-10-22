@@ -23,10 +23,10 @@ public class SendMessageUtil {
     }
 
     public static SendMessage createMessageWithButton(Long chatId, String text, List<List<InlineKeyboardButton>> rows) {
+        log.info("Send message to tg chat id: {} with message: {}", chatId, text);
         InlineKeyboardMarkup markup = InlineKeyboardMarkup.builder()
                 .keyboard(rows)
                 .build();
-
         return SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
