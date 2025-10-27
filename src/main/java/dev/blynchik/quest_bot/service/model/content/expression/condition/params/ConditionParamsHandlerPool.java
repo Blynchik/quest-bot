@@ -16,9 +16,11 @@ public class ConditionParamsHandlerPool {
 
     @Autowired
     public ConditionParamsHandlerPool(AlwaysParamsHandler alwaysParamsHandler,
-                                      ChanceParamsHandler chanceParamsHandler) {
+                                      ChanceParamsHandler chanceParamsHandler,
+                                      NumParamsHandler numParamsHandler) {
         pool.put(ConditionType.ALWAYS, alwaysParamsHandler);
         pool.put(ConditionType.CHANCE, chanceParamsHandler);
+        pool.put(ConditionType.USER_NUM, numParamsHandler);
     }
 
     @SuppressWarnings("unchecked")

@@ -32,6 +32,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -100,10 +101,11 @@ public class CallbackHandler {
             String[] callbackData = data.split(SEPARATOR.replace());
             Long questId = Long.parseLong(callbackData[1]);
             EventStore event = questService.getFirstEventByQuestId(questId);
-            List<ActionStore> actions = eventService.getActionsByEventId(event.getId()).stream()
-                    .filter(a -> evaluator.evaluate(a.getCondition()))
-                    // здесь еще может быть проверка на actionStore.hideIfImprobable, но контексте данных квестов не нужна
-                    .toList();
+            List<ActionStore> actions = new ArrayList<>();
+            for (ActionStore a : eventService.getActionsByEventId(event.getId())) {
+                if (evaluator.evaluate(a.getCondition(), player)) actions.add(a);
+                // здесь еще может быть проверка на actionStore.hideIfImprobable, но контексте данных квестов не нужна
+            }
             player = userService.prepareToStartQuest(player, questId, event, actions);
             String messageText = textCustomizer.customizeEvent(
                     event.getDescr(),
@@ -128,12 +130,16 @@ public class CallbackHandler {
                             .orElseThrow(
                                     () -> new UnexpectedCallbackException("Неверная команда."))
                             .split(SEPARATOR.replace())[1]);
-            ResultStore result = actionService.getResultsByActionId(actionId).stream()
-                    .filter(r -> evaluator.evaluate(r.getCondition()))
-                    // здесь должно быть решение о том какой результат выдать, если несколько подходят по условиям
-                    .findFirst()
-                    .orElseThrow(
-                            () -> new NoPossibleResultException("Нет возможных результатов."));
+            ResultStore result = null;
+            List<ResultStore> results = actionService.getResultsByActionId(actionId);
+            for (ResultStore r : results) {
+                player.getCustom().getRuleStates().put("Координация", "68");
+                if (evaluator.evaluate(r.getCondition(), player)) {
+                    result = r;
+                    break;
+                }
+            }
+            if (result == null) throw new NoPossibleResultException("Нет возможных результатов.");
             List<ConsequenceStore> consequences = resultService.getConsequencesByResultId(result.getId());
             Long nextEventId = null;
             for (ConsequenceStore con : consequences) {
@@ -162,10 +168,11 @@ public class CallbackHandler {
                 }
             }
             EventStore event = eventService.getById(nextEventId);
-            List<ActionStore> actions = eventService.getActionsByEventId(event.getId()).stream()
-                    .filter(a -> evaluator.evaluate(a.getCondition()))
-                    // здесь еще может быть проверка на actionStore.hideIfImprobable, но контексте данных квестов не нужна
-                    .toList();
+            List<ActionStore> actions = new ArrayList<>();
+            for (ActionStore a : eventService.getActionsByEventId(event.getId())) {
+                if (evaluator.evaluate(a.getCondition(), player)) actions.add(a);
+                // здесь еще может быть проверка на actionStore.hideIfImprobable, но контексте данных квестов не нужна
+            }
             player = userService.prepareToNextEvent(player, event, actions);
             String messageText = textCustomizer.customizeEvent(
                     event.getDescr(),
