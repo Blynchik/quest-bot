@@ -9,6 +9,7 @@ build/
 !**/src/test/**/target/
 /generated/
 /generated-sources/
+/gradle
 
 ### STS ###
 .apt_generated
