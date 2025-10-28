@@ -132,8 +132,8 @@ public class CallbackHandler {
                             .split(SEPARATOR.replace())[1]);
             ResultStore result = null;
             List<ResultStore> results = actionService.getResultsByActionId(actionId);
+            //здесь все таки лучше собрать список возможных результатов и выбрать какой-то по приоритету
             for (ResultStore r : results) {
-                player.getCustom().getRuleStates().put("Координация", "68");
                 if (evaluator.evaluate(r.getCondition(), player)) {
                     result = r;
                     break;
